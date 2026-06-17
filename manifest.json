@@ -1,0 +1,8 @@
+{
+  "name": "Keystones Intelligence Feed",
+  "short_name": "Keystones",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#080806",
+  "theme_color": "#d7b46a"
+}
