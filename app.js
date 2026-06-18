@@ -4,25 +4,12 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const WHATSAPP_NUMBER = "919632311518";
 
-const adminToggle = document.getElementById("adminToggle");
-const adminPanel = document.getElementById("adminPanel");
-const postForm = document.getElementById("postForm");
-const searchInput = document.getElementById("searchInput");
-const categoryFilter = document.getElementById("categoryFilter");
 const hotList = document.getElementById("hotList");
 const feedList = document.getElementById("feedList");
+const localitySelect = document.getElementById("localitySelect");
+const localitySearchBtn = document.getElementById("localitySearchBtn");
 
 let feedItems = [];
-
-if (adminPanel) {
-  adminPanel.classList.add("hidden");
-}
-
-if (adminToggle) {
-  adminToggle.addEventListener("click", () => {
-    openWhatsApp("Hi Keystones, I want access to private market intelligence.");
-  });
-}
 
 function scrollToSection(id) {
   document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
@@ -31,6 +18,21 @@ function scrollToSection(id) {
 function openWhatsApp(message = "Hi Keystones, I want to know more about an opportunity.") {
   const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
   window.open(url, "_blank");
+}
+
+if (localitySearchBtn) {
+  localitySearchBtn.addEventListener("click", () => {
+    const locality = localitySelect?.value;
+
+    if (!locality) {
+      alert("Please select a locality first.");
+      return;
+    }
+
+    openWhatsApp(
+      `Hi Keystones, I want real estate insights for ${locality}. Please share current opportunities and market intelligence.`
+    );
+  });
 }
 
 function formatType(type) {
@@ -116,19 +118,7 @@ function cardTemplate(item, mode = "feed", index = 0) {
 }
 
 function render() {
-  const q = (searchInput?.value || "").toLowerCase();
-  const category = categoryFilter?.value || "all";
-
-  const filtered = feedItems.filter((item) => {
-    const text = [item.title, item.location, item.builder, item.summary, item.budget]
-      .filter(Boolean)
-      .join(" ")
-      .toLowerCase();
-
-    return text.includes(q) && (category === "all" || item.type === category);
-  });
-
-  const hotItems = filtered.filter((item) => item.type === "hot");
+  const hotItems = feedItems.filter((item) => item.type === "hot");
 
   if (hotList) {
     hotList.innerHTML = hotItems.length
@@ -137,8 +127,8 @@ function render() {
   }
 
   if (feedList) {
-    feedList.innerHTML = filtered.length
-      ? filtered.map((item, index) => cardTemplate(item, "feed", index)).join("")
+    feedList.innerHTML = feedItems.length
+      ? feedItems.map((item, index) => cardTemplate(item, "feed", index)).join("")
       : `<p class="empty">No signals found.</p>`;
   }
 }
@@ -150,77 +140,12 @@ async function loadFeed() {
     .order("created_at", { ascending: false });
 
   if (error) {
-    if (feedList) {
-      feedList.innerHTML = `
-        <article class="feed-card signal-card">
-          <div class="signal-header">
-            <span>SIGNAL 001</span>
-            <small>Market Signal</small>
-          </div>
-
-          <h4>North Bangalore Growth Corridor</h4>
-
-          <div class="signal-matrix">
-            <div>
-              <small>Corridor</small>
-              <strong>North Bangalore</strong>
-            </div>
-            <div>
-              <small>Conviction</small>
-              <strong>Under Review</strong>
-            </div>
-            <div>
-              <small>Horizon</small>
-              <strong>5–7 Years</strong>
-            </div>
-          </div>
-
-          <div class="keystones-view">
-            <small>Keystones View</small>
-            <p>
-              Private intelligence is being curated by Keystones.
-              Request access to receive early opportunity signals before they become public conversations.
-            </p>
-          </div>
-
-          <div class="signal-tags">
-            <span>Growth Corridor</span>
-            <span>Infrastructure Signal</span>
-            <span>Private Intelligence</span>
-          </div>
-
-          <div class="card-meta">
-            <span>Keystones Desk</span>
-            <strong>Private Access</strong>
-          </div>
-
-          <button class="ask-btn"
-            onclick="openWhatsApp('Hi Keystones, I want access to private market intelligence.')">
-            Request Intelligence
-          </button>
-        </article>
-      `;
-    }
+    feedList.innerHTML = `<p class="empty">Signals are being updated. Request insights through WhatsApp.</p>`;
     return;
   }
 
   feedItems = data || [];
   render();
-}
-
-if (postForm) {
-  postForm.addEventListener("submit", async (event) => {
-    event.preventDefault();
-    alert("Admin publishing is disabled on the public website.");
-  });
-}
-
-if (searchInput) {
-  searchInput.addEventListener("input", render);
-}
-
-if (categoryFilter) {
-  categoryFilter.addEventListener("change", render);
 }
 
 loadFeed();
