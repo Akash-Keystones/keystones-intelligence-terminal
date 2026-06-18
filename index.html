@@ -18,7 +18,6 @@
           <h1>Keystones</h1>
         </div>
       </div>
-      <button id="adminToggle" class="ghost-btn">Admin</button>
     </header>
 
     <section class="hero-card">
@@ -35,6 +34,88 @@
     <section class="section-block">
       <div class="section-title">
         <h3>Market Radar</h3>
+        <span>North Bangalore signal strength</span>
+      </div>
+
+      <div class="radar-table">
+        <div><strong>Airport Corridor</strong><span>Infrastructure Momentum</span><b>9.1</b></div>
+        <div><strong>Bagalur</strong><span>Growth Corridor</span><b>8.8</b></div>
+        <div><strong>Hennur</strong><span>Premium Demand</span><b>8.5</b></div>
+        <div><strong>Thanisandra</strong><span>Established Demand</span><b>7.6</b></div>
+        <div><strong>Hebbal</strong><span>Mature Premium Market</span><b>7.4</b></div>
+      </div>
+    </section>
+
+    <section class="section-block">
+      <div class="section-title">
+        <h3>Market Pulse</h3>
+        <span>Live intelligence indicators</span>
+      </div>
+
+      <div class="pulse-grid">
+        <div class="pulse-card positive"><small>Airport Expansion</small><strong>Rising</strong></div>
+        <div class="pulse-card positive"><small>Premium Housing Demand</small><strong>Rising</strong></div>
+        <div class="pulse-card watch"><small>Supply Risk</small><strong>Watch</strong></div>
+        <div class="pulse-card positive"><small>Rental Demand</small><strong>Positive</strong></div>
+      </div>
+    </section>
+
+    <section class="search-panel">
+      <input id="searchInput" type="search" placeholder="Search signal, corridor, builder, location..." />
+      <select id="categoryFilter">
+        <option value="all">All Signals</option>
+        <option value="hot">A+ Conviction</option>
+        <option value="market">Market Signal</option>
+        <option value="rera">RERA Signal</option>
+        <option value="builder">Builder Movement</option>
+      </select>
+    </section>
+
+    <main>
+      <section id="hot" class="section-block">
+        <div class="section-title">
+          <h3>Current Intelligence</h3>
+          <span>Curated by Keystones</span>
+        </div>
+        <div id="hotList" class="card-grid"></div>
+      </section>
+
+      <section class="section-block">
+        <div class="section-title">
+          <h3>Signal Feed</h3>
+          <span>Market movement archive</span>
+        </div>
+        <div id="feedList" class="feed-list"></div>
+      </section>
+
+      <section class="section-block">
+        <div class="circle-card">
+          <img src="logo.jpg" class="circle-logo" alt="Keystones Logo" />
+          <p class="signal">Investor Circle</p>
+          <h3>Unlock private opportunity intelligence.</h3>
+          <p>
+            Receive corridor analysis, builder movement intelligence,
+            and early-stage opportunity signals before they become public conversations.
+          </p>
+          <button onclick="openWhatsApp('Hi Keystones, I want access to Investor Circle intelligence.')">
+            Request Access
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <nav class="bottom-nav">
+      <button onclick="window.scrollTo({top:0, behavior:'smooth'})">Radar</button>
+      <button onclick="scrollToSection('hot')">Signals</button>
+      <button onclick="openWhatsApp('Hi Keystones, I want access to Investor Circle intelligence.')">Circle</button>
+    </nav>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="app.js"></script>
+</body>
+</html>        <h3>Market Radar</h3>
         <span>North Bangalore signal strength</span>
       </div>
 
