@@ -1,5 +1,5 @@
 const SUPABASE_URL = "https://rnffeqagizrajazptttk.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJuZmZlcWFnaXpyYWphenB0dHRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3MTExMTUsImV4cCI6MjA5NzI4NzExNX0.WrcqLTbixklKkM9rfdxuLSbVtC3sne-JFflUK8Qsgb0";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInJlZiI6InJuZmZlcWFnaXpyYWphenB0dHRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3MTExMTUsImV4cCI6MjA5NzI4NzExNX0.WrcqLTbixklKkM9rfdxuLSbVtC3sne-JFflUK8Qsgb0";
 
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const WHATSAPP_NUMBER = "919632311518";
@@ -14,10 +14,18 @@ const feedList = document.getElementById("feedList");
 
 let feedItems = [];
 
-adminToggle.addEventListener("click", () => {
-  adminPanel.classList.remove("hidden");
-  adminPanel.scrollIntoView({ behavior: "smooth" });
-});
+// PUBLIC SAFETY FIX:
+// Admin panel will stay hidden for public visitors.
+// Button now sends viewer to WhatsApp instead of opening Admin Control Room.
+if (adminPanel) {
+  adminPanel.classList.add("hidden");
+}
+
+if (adminToggle) {
+  adminToggle.addEventListener("click", () => {
+    openWhatsApp("Hi Keystones, I want access to private market intelligence.");
+  });
+}
 
 function scrollToSection(id) {
   document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
@@ -111,8 +119,8 @@ function cardTemplate(item, mode = "feed", index = 0) {
 }
 
 function render() {
-  const q = (searchInput.value || "").toLowerCase();
-  const category = categoryFilter.value;
+  const q = (searchInput?.value || "").toLowerCase();
+  const category = categoryFilter?.value || "all";
 
   const filtered = feedItems.filter((item) => {
     const text = [item.title, item.location, item.builder, item.summary, item.budget]
@@ -125,13 +133,17 @@ function render() {
 
   const hotItems = filtered.filter((item) => item.type === "hot");
 
-  hotList.innerHTML = hotItems.length
-    ? hotItems.map((item, index) => cardTemplate(item, "hot", index)).join("")
-    : `<p class="empty">No A+ conviction signals yet.</p>`;
+  if (hotList) {
+    hotList.innerHTML = hotItems.length
+      ? hotItems.map((item, index) => cardTemplate(item, "hot", index)).join("")
+      : `<p class="empty">No A+ conviction signals yet.</p>`;
+  }
 
-  feedList.innerHTML = filtered.length
-    ? filtered.map((item, index) => cardTemplate(item, "feed", index)).join("")
-    : `<p class="empty">No signals found.</p>`;
+  if (feedList) {
+    feedList.innerHTML = filtered.length
+      ? filtered.map((item, index) => cardTemplate(item, "feed", index)).join("")
+      : `<p class="empty">No signals found.</p>`;
+  }
 }
 
 async function loadFeed() {
@@ -141,7 +153,9 @@ async function loadFeed() {
     .order("created_at", { ascending: false });
 
   if (error) {
-    feedList.innerHTML = `<p class="empty">Supabase error: ${error.message}</p>`;
+    if (feedList) {
+      feedList.innerHTML = `<p class="empty">Supabase error: ${error.message}</p>`;
+    }
     return;
   }
 
@@ -149,31 +163,21 @@ async function loadFeed() {
   render();
 }
 
-postForm.addEventListener("submit", async (event) => {
-  event.preventDefault();
+// PUBLIC SAFETY FIX:
+// Even if someone finds the hidden form, public posting is disabled here.
+if (postForm) {
+  postForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    alert("Admin publishing is disabled on the public website.");
+  });
+}
 
-  const payload = {
-    title: document.getElementById("title").value,
-    location: document.getElementById("location").value,
-    builder: document.getElementById("builder").value,
-    type: document.getElementById("type").value,
-    summary: document.getElementById("summary").value,
-    budget: document.getElementById("budget").value
-  };
+if (searchInput) {
+  searchInput.addEventListener("input", render);
+}
 
-  const { error } = await supabaseClient.from("opportunities").insert([payload]);
-
-  if (error) {
-    alert("Could not publish: " + error.message);
-    return;
-  }
-
-  postForm.reset();
-  await loadFeed();
-  alert("Published to Keystones Intelligence Terminal");
-});
-
-searchInput.addEventListener("input", render);
-categoryFilter.addEventListener("change", render);
+if (categoryFilter) {
+  categoryFilter.addEventListener("change", render);
+}
 
 loadFeed();
