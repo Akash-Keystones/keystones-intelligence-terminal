@@ -1,5 +1,5 @@
 const SUPABASE_URL = "https://rnffeqagizrajazptttk.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInJlZiI6InJuZmZlcWFnaXpyYWphenB0dHRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3MTExMTUsImV4cCI6MjA5NzI4NzExNX0.WrcqLTbixklKkM9rfdxuLSbVtC3sne-JFflUK8Qsgb0";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJuZmZlcWFnaXpyYWphenB0dHRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3MTExMTUsImV4cCI6MjA5NzI4NzExNX0.WrcqLTbixklKkM9rfdxuLSbVtC3sne-JFflUK8Qsgb0";
 
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const WHATSAPP_NUMBER = "919632311518";
@@ -14,9 +14,6 @@ const feedList = document.getElementById("feedList");
 
 let feedItems = [];
 
-// PUBLIC SAFETY FIX:
-// Admin panel will stay hidden for public visitors.
-// Button now sends viewer to WhatsApp instead of opening Admin Control Room.
 if (adminPanel) {
   adminPanel.classList.add("hidden");
 }
@@ -154,7 +151,55 @@ async function loadFeed() {
 
   if (error) {
     if (feedList) {
-      feedList.innerHTML = `<p class="empty">Supabase error: ${error.message}</p>`;
+      feedList.innerHTML = `
+        <article class="feed-card signal-card">
+          <div class="signal-header">
+            <span>SIGNAL 001</span>
+            <small>Market Signal</small>
+          </div>
+
+          <h4>North Bangalore Growth Corridor</h4>
+
+          <div class="signal-matrix">
+            <div>
+              <small>Corridor</small>
+              <strong>North Bangalore</strong>
+            </div>
+            <div>
+              <small>Conviction</small>
+              <strong>Under Review</strong>
+            </div>
+            <div>
+              <small>Horizon</small>
+              <strong>5–7 Years</strong>
+            </div>
+          </div>
+
+          <div class="keystones-view">
+            <small>Keystones View</small>
+            <p>
+              Private intelligence is being curated by Keystones.
+              Request access to receive early opportunity signals before they become public conversations.
+            </p>
+          </div>
+
+          <div class="signal-tags">
+            <span>Growth Corridor</span>
+            <span>Infrastructure Signal</span>
+            <span>Private Intelligence</span>
+          </div>
+
+          <div class="card-meta">
+            <span>Keystones Desk</span>
+            <strong>Private Access</strong>
+          </div>
+
+          <button class="ask-btn"
+            onclick="openWhatsApp('Hi Keystones, I want access to private market intelligence.')">
+            Request Intelligence
+          </button>
+        </article>
+      `;
     }
     return;
   }
@@ -163,8 +208,6 @@ async function loadFeed() {
   render();
 }
 
-// PUBLIC SAFETY FIX:
-// Even if someone finds the hidden form, public posting is disabled here.
 if (postForm) {
   postForm.addEventListener("submit", async (event) => {
     event.preventDefault();
